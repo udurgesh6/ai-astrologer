@@ -1,0 +1,13 @@
+{
+  "domain": "marriage",
+  "processed_files": [
+    "ilide.info-jyotish-predicting-marriage-trivedi-pr_a1a475893f2c8116372485aad029d3be.pdf"
+  ],
+  "last_updated": "2025-10-25T09:28:44.230566",
+  "stats": {
+    "graph_nodes": 76,
+    "graph_edges": 29512,
+    "keyword_vocab": 17175,
+    "vector_count": 1290
+  }
+}
