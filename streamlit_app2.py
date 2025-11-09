@@ -6,6 +6,7 @@ Simple Q&A interface - auto-loads pre-processed knowledge bases
 import streamlit as st
 import sys
 from pathlib import Path
+import base64
 
 # Add paths
 sys.path.insert(0, 'src/pdf_processing')
@@ -30,9 +31,20 @@ st.markdown("""
     .main-header {
         font-size: 2.5rem;
         font-weight: bold;
-        color: #1f77b4;
+        color: black;
         text-align: center;
         margin-bottom: 1rem;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+    }
+    .logo-img {
+        height: 80px;
+        width: 80px;
+        border-radius: 50%;
+        object-fit: cover;
     }
     .domain-badge {
         display: inline-block;
@@ -54,6 +66,30 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
+
+# Load and encode logo image
+if 'logo_base64' not in st.session_state:
+    # Try multiple possible paths
+    image_paths = [
+        'ai-astrologer.png',  # Current directory
+        Path(__file__).parent / 'ai-astrologer.png',  # Same directory as this script
+        'astro-pdf-qa/ai-astrologer.png'  # Subdirectory
+    ]
+    
+    st.session_state.logo_base64 = ''
+    for img_path in image_paths:
+        try:
+            with open(img_path, 'rb') as img_file:
+                st.session_state.logo_base64 = base64.b64encode(img_file.read()).decode()
+                break  # Success, stop trying other paths
+        except FileNotFoundError:
+            continue
+    
+    # Debug info (you can remove this later)
+    if not st.session_state.logo_base64:
+        st.session_state.logo_debug = f"Image not found. Tried: {[str(p) for p in image_paths]}"
+    else:
+        st.session_state.logo_debug = "Image loaded successfully"
 
 # Initialize session state and auto-load knowledge base
 if 'initialized' not in st.session_state:
@@ -129,7 +165,9 @@ def display_domain_badge(domain: str):
 # Main UI
 def main():
     # Header
-    st.markdown('<div class="main-header">🔮 Astrology Q&A</div>', unsafe_allow_html=True)
+    st.markdown('<div class="main-header"><img src="data:image/png;base64,{}" class="logo-img">AI पंडित</div>'.format(
+        st.session_state.get('logo_base64', '')
+    ), unsafe_allow_html=True)
     
     # Handle errors
     if st.session_state.error_message:
